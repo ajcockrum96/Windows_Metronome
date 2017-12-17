@@ -38,6 +38,8 @@ namespace Windows_Metronome
         private int pulse;
         private int met_cnt;
         private int tempo;
+        private int tsnum;
+        private int tsden;
         // Binding logic for pulse count output to UI
         private string pulse_cnt;
         public string Pulse_Cnt
@@ -62,6 +64,30 @@ namespace Windows_Metronome
             }
         }
 
+        // Binding logic for time signature numerator setting output to UI
+        private string tsnumerator;
+        public string TSNumerator
+        {
+            get { return tsnumerator; }
+            set
+            {
+                tsnumerator = value;
+                OnPropertyChanged("TSNumerator");
+            }
+        }
+
+        // Binding logic for time signature denominator setting output to UI
+        private string tsdenominator;
+        public string TSDenominator
+        {
+            get { return tsdenominator; }
+            set
+            {
+                tsdenominator = value;
+                OnPropertyChanged("TSDenominator");
+            }
+        }
+
         private void OnPropertyChanged(string propName)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -82,10 +108,16 @@ namespace Windows_Metronome
 
             tempo = 120;
             BPM = String.Format("BPM={0}", tempo);
+
+            tsnum = 4;
+            TSNumerator = String.Format("{0}", tsnum);
+
+            tsden = 4;
+            TSDenominator = String.Format("{0}", tsden);
             for(;;)
             {
                 Pulse_Cnt = String.Format("{0}", ++pulse);
-                pulse %= 4;
+                pulse %= tsnum;
                 met_cnt = 60 * 1000 / tempo;
                 System.Threading.Thread.Sleep(met_cnt);
             }
@@ -104,6 +136,35 @@ namespace Windows_Metronome
             tempo -= BPM_INC;
             BPM = String.Format("BPM={0}", tempo);
             met_cnt = 60 * 1000 / tempo;
+        }
+
+        private void TSNumeratorPlus_Click(object sender, RoutedEventArgs e)
+        {
+            tsnum++;
+            if(tsnum > 32) {
+                tsnum = 32;
+            }
+            TSNumerator = String.Format("{0}", tsnum);
+        }
+
+        private void TSNumeratorMinus_Click(object sender, RoutedEventArgs e)
+        {
+            tsnum--;
+            if(tsnum <= 0)
+            {
+                tsnum = 1;
+            }
+            TSNumerator = String.Format("{0}", tsnum);
+        }
+
+        private void TSDenominatorPlus_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TSDenominatorMinus_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
