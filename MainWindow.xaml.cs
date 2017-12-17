@@ -113,6 +113,8 @@ namespace Windows_Metronome
 
         // Metronome "Macros"
         private static int TEMPO_INC = 4;
+        private static int MAX_TEMPO = 240;
+        private static int MIN_TEMPO = 4;
         private static int MAX_DEN = 16;    // Set 16th note as shortest pulse length
         private static int MIN_DEN = 2;     // Set half note as longest pulse length
         private static int MAX_NUM = 32;
@@ -148,12 +150,20 @@ namespace Windows_Metronome
         private void TempoPlus_Click(object sender, RoutedEventArgs e)
         {
             Tempo += TEMPO_INC;
+            if(Tempo > MAX_TEMPO)
+            {
+                Tempo = MAX_TEMPO;
+            }
             met_wait = 60 * 1000 / (tempo * beat_length);
         }
 
         private void TempoMinus_Click(object sender, RoutedEventArgs e)
         {
             Tempo -= TEMPO_INC;
+            if(Tempo < MIN_TEMPO)
+            {
+                Tempo = MIN_TEMPO;
+            }
             met_wait = 60 * 1000 / (tempo * beat_length);
         }
 
@@ -202,6 +212,78 @@ namespace Windows_Metronome
         {
             pulse_count = 0;
             Current_Pulse = 1;
+        }
+
+        private void TSBeatPlus_Click(object sender, RoutedEventArgs e)
+        {
+            if(MAX_DEN == 16) {
+                switch (beat_length)
+                {
+                    case (1):
+                        // Becomes 2
+                        TSBeat = "8th";
+                        beat_length += 1;
+                        break;
+                    case (2):
+                        // Becomes 3
+                        TSBeat = "Dotted 8th";
+                        beat_length += 1;
+                        break;
+                    case (3):
+                        // Becomes 4
+                        TSBeat = "Quarter";
+                        beat_length += 1;
+                        break;
+                    case (4):
+                        // Becomes 6
+                        TSBeat = "Dotted Quarter";
+                        beat_length += 2;
+                        break;
+                    case (6):
+                        // Becomes 8
+                        TSBeat = "Half";
+                        beat_length += 2;
+                        break;
+                }
+            }
+            met_wait = 60 * 1000 / (tempo * beat_length);
+            ResetMetronome();
+        }
+
+        private void TSBeatMinus_Click(object sender, RoutedEventArgs e)
+        {
+            if(MAX_DEN == 16) {
+                switch (beat_length)
+                {
+                    case (2):
+                        // Becomes 1
+                        TSBeat = "16th";
+                        beat_length -= 1;
+                        break;
+                    case (3):
+                        // Becomes 2
+                        TSBeat = "8th";
+                        beat_length -= 1;
+                        break;
+                    case (4):
+                        // Becomes 3
+                        TSBeat = "Dotted 8th";
+                        beat_length -= 1;
+                        break;
+                    case (6):
+                        // Becomes 4
+                        TSBeat = "Quarter";
+                        beat_length -= 2;
+                        break;
+                    case (8):
+                        // Becomes 6
+                        TSBeat = "Dotted Quarter";
+                        beat_length -= 2;
+                        break;
+                }
+            }
+            met_wait = 60 * 1000 / (tempo * beat_length);
+            ResetMetronome();
         }
     }
 }
