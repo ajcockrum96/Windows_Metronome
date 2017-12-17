@@ -35,38 +35,38 @@ namespace Windows_Metronome
         }
 
         // Metronome Global Variables
-        private int pulse;
-        private int met_cnt;
-        private int tempo;
-        private int tsnum;
-        private int tsden;
+        private int beat_length;    // Length of beat in terms of MAX_DEN notes
+        private int pulse_length;   // Length of beat in terms of MAX_DEN notes
+        private int pulse_count;      // Number of MAX_DEN notes since last pulse
+        private int met_wait;    // Number of milliseconds between MAX_DEN notes at given tempo
+
         // Binding logic for pulse count output to UI
-        private string pulse_cnt;
-        public string Pulse_Cnt
+        private int current_pulse;
+        public int Current_Pulse
         {
-            get { return pulse_cnt; }
+            get { return current_pulse + 1; }
             set
             {
-                pulse_cnt = value;
-                OnPropertyChanged("Pulse_Cnt");
+                current_pulse = value;
+                OnPropertyChanged("Current_Pulse");
             }
         }
 
-        // Binding logic for bpm setting output to UI
-        private string bpm;
-        public string BPM
+        // Binding logic for tempo setting output to UI
+        private int tempo;
+        public int Tempo
         {
-            get { return bpm; }
+            get { return tempo; }
             set
             {
-                bpm = value;
-                OnPropertyChanged("BPM");
+                tempo = value;
+                OnPropertyChanged("Tempo");
             }
         }
 
         // Binding logic for time signature numerator setting output to UI
-        private string tsnumerator;
-        public string TSNumerator
+        private int tsnumerator;
+        public int TSNumerator
         {
             get { return tsnumerator; }
             set
@@ -77,14 +77,26 @@ namespace Windows_Metronome
         }
 
         // Binding logic for time signature denominator setting output to UI
-        private string tsdenominator;
-        public string TSDenominator
+        private int tsdenominator;
+        public int TSDenominator
         {
             get { return tsdenominator; }
             set
             {
                 tsdenominator = value;
                 OnPropertyChanged("TSDenominator");
+            }
+        }
+
+        // Binding logic for time signature beat setting output to UI
+        private string tsbeat;
+        public string TSBeat
+        {
+            get { return tsbeat; }
+            set
+            {
+                tsbeat = value;
+                OnPropertyChanged("TSBeat");
             }
         }
 
@@ -99,72 +111,97 @@ namespace Windows_Metronome
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        // Metronome "Macros"
+        private static int TEMPO_INC = 4;
+        private static int MAX_DEN = 16;    // Set 16th note as shortest pulse length
+        private static int MIN_DEN = 2;     // Set half note as longest pulse length
+        private static int MAX_NUM = 32;
+        private static int MIN_NUM = 1;
+
         // Main() for metronome background operation
-        private static int BPM_INC = 4;
         public void Main()
         {
-            pulse = 0;
-            Pulse_Cnt = String.Format("{0}", pulse);
+            TSNumerator = 4;
+            TSDenominator = 4;
 
-            tempo = 120;
-            BPM = String.Format("BPM={0}", tempo);
+            pulse_length = MAX_DEN / TSDenominator;
+            beat_length = pulse_length;
+            TSBeat = "Quarter";
 
-            tsnum = 4;
-            TSNumerator = String.Format("{0}", tsnum);
+            Current_Pulse = 1;
 
-            tsden = 4;
-            TSDenominator = String.Format("{0}", tsden);
+            Tempo = 120;
+            met_wait = 60 * 1000 / (Tempo * beat_length);
+
             for(;;)
             {
-                Pulse_Cnt = String.Format("{0}", ++pulse);
-                pulse %= tsnum;
-                met_cnt = 60 * 1000 / tempo;
-                System.Threading.Thread.Sleep(met_cnt);
+                pulse_count = (pulse_count + 1) % pulse_length;
+                if(pulse_count == 0)
+                {
+                    Current_Pulse = Current_Pulse % TSNumerator;
+                }
+                System.Threading.Thread.Sleep(met_wait);
             }
         }
 
         // Button Event Handlers
         private void TempoPlus_Click(object sender, RoutedEventArgs e)
         {
-            tempo += BPM_INC;
-            BPM = String.Format("BPM={0}", tempo);
-            met_cnt = 60 * 1000 / tempo;
+            Tempo += TEMPO_INC;
+            met_wait = 60 * 1000 / (tempo * beat_length);
         }
 
         private void TempoMinus_Click(object sender, RoutedEventArgs e)
         {
-            tempo -= BPM_INC;
-            BPM = String.Format("BPM={0}", tempo);
-            met_cnt = 60 * 1000 / tempo;
+            Tempo -= TEMPO_INC;
+            met_wait = 60 * 1000 / (tempo * beat_length);
         }
 
         private void TSNumeratorPlus_Click(object sender, RoutedEventArgs e)
         {
-            tsnum++;
-            if(tsnum > 32) {
-                tsnum = 32;
+            TSNumerator++;
+            if(TSNumerator > MAX_NUM) {
+                TSNumerator = MAX_NUM;
             }
-            TSNumerator = String.Format("{0}", tsnum);
+            ResetMetronome();
         }
 
         private void TSNumeratorMinus_Click(object sender, RoutedEventArgs e)
         {
-            tsnum--;
-            if(tsnum <= 0)
+            TSNumerator--;
+            if(TSNumerator < MIN_NUM)
             {
-                tsnum = 1;
+                TSNumerator = MIN_NUM;
             }
-            TSNumerator = String.Format("{0}", tsnum);
+            ResetMetronome();
         }
 
         private void TSDenominatorPlus_Click(object sender, RoutedEventArgs e)
         {
-
+            TSDenominator *= 2;
+            if(TSDenominator > MAX_DEN)
+            {
+                TSDenominator = MAX_DEN;
+            }
+            pulse_length = MAX_DEN / TSDenominator;
+            ResetMetronome();
         }
 
         private void TSDenominatorMinus_Click(object sender, RoutedEventArgs e)
         {
+            TSDenominator /= 2;
+            if(TSDenominator < MIN_DEN)
+            {
+                TSDenominator = MIN_DEN;
+            }
+            pulse_length = MAX_DEN / TSDenominator;
+            ResetMetronome();
+        }
 
+        private void ResetMetronome()
+        {
+            pulse_count = 0;
+            Current_Pulse = 1;
         }
     }
 }

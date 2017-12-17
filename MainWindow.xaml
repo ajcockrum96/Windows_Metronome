@@ -103,17 +103,19 @@
         </Grid.RowDefinitions>
 
         <!-- Row 0 -->
-        <TextBlock Text="{Binding Path=BPM}" FontSize="16" FontWeight="Normal" Grid.Column="0" Grid.ColumnSpan="7" Grid.Row="0" Grid.RowSpan="2"></TextBlock>
-        <Button Name="TempoPlus" Click="TempoPlus_Click" FontSize="12" FontWeight="Normal" Grid.Column="7" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Right" Width="20">+</Button>
-        <Button Name="TempoMinus" Click="TempoMinus_Click" FontSize="12" FontWeight="Normal" Grid.Column="9" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2">-</Button>
-        <TextBlock Text="{Binding Path=TSNumerator}" FontSize="16" FontWeight="Normal" Grid.Column="11" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="2"></TextBlock>
-        <Button Name="TSNumeratorPlus" Click="TSNumeratorPlus_Click" FontSize="12" FontWeight="Normal" Grid.Column="15" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Right" Width="20">+</Button>
-        <Button Name="TSNumeratorMinus" Click="TSNumeratorMinus_Click" FontSize="12" FontWeight="Normal" Grid.Column="17" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Right" Width="20">-</Button>
+        <TextBlock Text="{Binding Path=TSBeat}" FontSize="16" FontWeight="Normal" Grid.Column="0" Grid.ColumnSpan="10" Grid.Row="0" Grid.RowSpan="2"></TextBlock>
+        <TextBlock Text="{Binding Path=Tempo}" TextAlignment="Right" FontSize="16" FontWeight="Normal" Grid.Column="10" Grid.ColumnSpan="8" Grid.Row="0" Grid.RowSpan="2"></TextBlock>
+        <Button Name="TempoPlus" Click="TempoPlus_Click" FontSize="12" FontWeight="Normal" Grid.Column="18" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Right" Width="20">+</Button>
+        <Button Name="TempoMinus" Click="TempoMinus_Click" FontSize="12" FontWeight="Normal" Grid.Column="20" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2">-</Button>
+        <TextBlock Text="{Binding Path=TSNumerator}" FontSize="16" FontWeight="Normal" Grid.Column="22" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="2"></TextBlock>
+        <Button Name="TSNumeratorPlus" Click="TSNumeratorPlus_Click" FontSize="12" FontWeight="Normal" Grid.Column="26" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Right" Width="20">+</Button>
+        <Button Name="TSNumeratorMinus" Click="TSNumeratorMinus_Click" FontSize="12" FontWeight="Normal" Grid.Column="28" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Right" Width="20">-</Button>
 
         <!-- Row 1 -->
-        <TextBlock Text="{Binding Path=Pulse_Cnt}" FontSize="16" FontWeight="Normal" Grid.ColumnSpan="2" Grid.Column="0" Grid.RowSpan="2" Grid.Row="2"></TextBlock>
-        <TextBlock Text="{Binding Path=TSDenominator}" FontSize="16" FontWeight="Normal" Grid.Column="11" Grid.ColumnSpan="4" Grid.Row="2" Grid.RowSpan="2"></TextBlock>
-        <Button Name="TSDenominatorPlus" Click="TSDenominatorPlus_Click" FontSize="12" FontWeight="Normal" Grid.Column="15" Grid.ColumnSpan="2" Grid.Row="2" Grid.RowSpan="2" HorizontalAlignment="Right" Width="20">+</Button>
-        <Button Name="TSDenominatorMinus" Click="TSDenominatorMinus_Click" FontSize="12" FontWeight="Normal" Grid.Column="17" Grid.ColumnSpan="2" Grid.Row="2" Grid.RowSpan="2" HorizontalAlignment="Right" Width="20">-</Button>
+        <TextBlock Text="{Binding Path=Current_Pulse}" FontSize="16" FontWeight="Normal" Grid.ColumnSpan="4" Grid.Column="0" Grid.RowSpan="2" Grid.Row="2"></TextBlock>
+        <TextBlock Text="{Binding Path=TSDenominator}" FontSize="16" FontWeight="Normal" Grid.Column="22" Grid.ColumnSpan="4" Grid.Row="2" Grid.RowSpan="2"></TextBlock>
+        <Button Name="TSDenominatorPlus" Click="TSDenominatorPlus_Click" FontSize="12" FontWeight="Normal" Grid.Column="26" Grid.ColumnSpan="2" Grid.Row="2" Grid.RowSpan="2" HorizontalAlignment="Right" Width="20">+</Button>
+        <Button Name="TSDenominatorMinus" Click="TSDenominatorMinus_Click" FontSize="12" FontWeight="Normal" Grid.Column="28" Grid.ColumnSpan="2" Grid.Row="2" Grid.RowSpan="2" HorizontalAlignment="Right" Width="20">-</Button>
+        <TextBlock Text="{Binding Path=test_num}" FontSize="16" FontWeight="Normal" Grid.Column="25" Grid.Row="20" Grid.ColumnSpan="10" Grid.RowSpan="2"></TextBlock>
     </Grid>
 </Window>
