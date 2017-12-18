@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,9 +36,11 @@ namespace Windows_Metronome
         }
 
         // Metronome Global Variables
-        private int beat_length;    // Length of beat in terms of MAX_DEN notes
+        private int run_stop;
         private int pulse_length;   // Length of beat in terms of MAX_DEN notes
+        private int beat_length;    // Length of beat in terms of MAX_DEN notes
         private int pulse_count;      // Number of MAX_DEN notes since last pulse
+        private int beat_count;      // Number of MAX_DEN notes since last pulse
         private int met_wait;    // Number of milliseconds between MAX_DEN notes at given tempo
 
         // Binding logic for pulse count output to UI
@@ -121,8 +124,25 @@ namespace Windows_Metronome
         private static int MIN_NUM = 1;
 
         // Main() for metronome background operation
+        private string test_string;
+        public string Test_String
+        {
+            get { return test_string; }
+            set
+            {
+                test_string = value;
+                OnPropertyChanged("Test_String");
+            }
+        }
         public void Main()
         {
+            int PulseSoundFlag = 0;
+            int BeatSoundFlag = 0;
+            int MeasureSoundFlag = 0;
+            SoundPlayer PulseSound   = new SoundPlayer("./Sounds/440-20ms.wav");
+            SoundPlayer BeatSound    = new SoundPlayer("./Sounds/880-20ms.wav");
+            SoundPlayer MeasureSound = new SoundPlayer("./Sounds/1760-20ms.wav");
+
             TSNumerator = 4;
             TSDenominator = 4;
 
@@ -135,14 +155,47 @@ namespace Windows_Metronome
             Tempo = 120;
             met_wait = 60 * 1000 / (Tempo * beat_length);
 
+            run_stop = 1;
+
             for(;;)
             {
-                pulse_count = (pulse_count + 1) % pulse_length;
-                if(pulse_count == 0)
+                if (run_stop == 1)
                 {
-                    Current_Pulse = Current_Pulse % TSNumerator;
+                    pulse_count = (pulse_count + 1) % pulse_length;
+                    beat_count = (beat_count + 1) % beat_length;
+                    if (pulse_count == 0)
+                    {
+                        Current_Pulse = Current_Pulse % TSNumerator;
+                        PulseSoundFlag = 1;
+                        if (Current_Pulse == 1)
+                        {
+                            MeasureSoundFlag = 1;
+                        }
+                    }
+                    if (beat_count == 0)
+                    {
+                        BeatSoundFlag = 1;
+                    }
+                    if (MeasureSoundFlag == 1)
+                    {
+                        MeasureSoundFlag = 0;
+                        BeatSoundFlag = 0;
+                        PulseSoundFlag = 0;
+                        MeasureSound.Play();
+                    }
+                    else if (BeatSoundFlag == 1)
+                    {
+                        BeatSoundFlag = 0;
+                        PulseSoundFlag = 0;
+                        BeatSound.Play();
+                    }
+                    else if (PulseSoundFlag == 1)
+                    {
+                        PulseSoundFlag = 0;
+                        PulseSound.Play();
+                    }
+                    System.Threading.Thread.Sleep(met_wait);
                 }
-                System.Threading.Thread.Sleep(met_wait);
             }
         }
 
@@ -206,12 +259,6 @@ namespace Windows_Metronome
             }
             pulse_length = MAX_DEN / TSDenominator;
             ResetMetronome();
-        }
-
-        private void ResetMetronome()
-        {
-            pulse_count = 0;
-            Current_Pulse = 1;
         }
 
         private void TSBeatPlus_Click(object sender, RoutedEventArgs e)
@@ -284,6 +331,26 @@ namespace Windows_Metronome
             }
             met_wait = 60 * 1000 / (tempo * beat_length);
             ResetMetronome();
+        }
+
+        private void Start_Stop_Click(object sender, RoutedEventArgs e)
+        {
+            if(run_stop == 1)
+            {
+                run_stop = 0;
+            }
+            else
+            {
+                run_stop = 1;
+                ResetMetronome();
+            }
+        }
+
+        private void ResetMetronome()
+        {
+            pulse_count = 0;
+            beat_count  = 0;
+            Current_Pulse = 0;
         }
     }
 }
